@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "93833512296",
+    "project_id": "mynearplace-14a8d",
+    "storage_bucket": "mynearplace-14a8d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:93833512296:android:49e951c753bb7fc1f202dd",
+        "android_client_info": {
+          "package_name": "com.kkt1019.tpmylocationkakao"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "93833512296-gihcoh5skcd6u4p8plgce910k2k09bhf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9dIA6UNkpqK_S-OcgTD2-ruqQspM7I7E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "93833512296-gihcoh5skcd6u4p8plgce910k2k09bhf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
