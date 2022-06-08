@@ -57,6 +57,15 @@ dependencies {
 
     //Firebase product sdk
     implementation 'com.google.firebase:firebase-firestore-ktx'
+
+    //Kakao SDK
+    implementation "com.kakao.sdk:v2-user:2.10.0" // 카카오 로그인
+
+    //google login
+    implementation 'com.google.android.gms:play-services-auth:20.2.0'
+
+    //naver login
+    implementation 'com.navercorp.nid:oauth:5.1.0' // jdk 11
     
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

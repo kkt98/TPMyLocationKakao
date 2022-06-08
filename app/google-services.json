@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "93833512296-aio1m6jbcev1290eh6884p59se2a0kag.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kkt1019.tpmylocationkakao",
+            "certificate_hash": "7ddfc6a887e1c81daf05014b191c67185253775f"
+          }
+        },
+        {
           "client_id": "93833512296-gihcoh5skcd6u4p8plgce910k2k09bhf.apps.googleusercontent.com",
           "client_type": 3
         }
