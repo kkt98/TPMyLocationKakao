@@ -18,9 +18,16 @@ import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import com.kkt1019.tpmylocationkakao.G
 import com.kkt1019.tpmylocationkakao.databinding.ActivityLoginBinding
+import com.kkt1019.tpmylocationkakao.model.NaverUserInfoResponse
+import com.kkt1019.tpmylocationkakao.model.NidUser
 import com.kkt1019.tpmylocationkakao.model.UserAccount
+import com.kkt1019.tpmylocationkakao.network.RetrofitApiService
+import com.kkt1019.tpmylocationkakao.network.RetrofitHelper
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.OAuthLoginCallback
+import retrofit2.Call
+import retrofit2.Response
+import javax.security.auth.callback.Callback
 
 
 class LoginActivity : AppCompatActivity() {
@@ -162,9 +169,31 @@ class LoginActivity : AppCompatActivity() {
 
                 //사용자 정보를 가져오는 REST API의 접속토큰
                 val accessToken : String? = NaverIdLoginSDK.getAccessToken()
-                Toast.makeText(this@LoginActivity, "token : $accessToken", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this@LoginActivity, "token : $accessToken", Toast.LENGTH_SHORT).show()
 
                 //사용자 정보 가져오는 네트워크 작업수행 (Retrofit library 이용하기)
+                val retrofit = RetrofitHelper.getRetrofitInstance("https://openapi.naver.com")
+                retrofit.create(RetrofitApiService::class.java).getNidUserInfo("Bearer $accessToken").enqueue( object : retrofit2.Callback<NaverUserInfoResponse>{
+                    override fun onResponse(
+                        call: Call<NaverUserInfoResponse>,
+                        response: Response<NaverUserInfoResponse>
+                    ) {
+                        val userInfo: NaverUserInfoResponse? = response.body()
+                        val id: String = userInfo?.response?.id ?: ""
+                        val email: String = userInfo?.response?.email ?: ""
+
+                        Toast.makeText(this@LoginActivity, "$id, $email", Toast.LENGTH_SHORT).show()
+                        G.userAccount = UserAccount(id, email)
+
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
+                    }
+
+                    override fun onFailure(call: Call<NaverUserInfoResponse>, t: Throwable) {
+                        Toast.makeText(this@LoginActivity, "error $t", Toast.LENGTH_SHORT).show()
+                    }
+
+                })
             }
 
         })
@@ -172,3 +201,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
 }
+
+
+

@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/drawable/bg_choice.xml" value="0.1275" />
+        <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/drawable/bg_choice_select.xml" value="0.1275" />
         <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/drawable/bg_login_tv_go.xml" value="0.1275" />
         <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/drawable/bg_round_rect.xml" value="0.1275" />
         <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.1275" />
@@ -11,8 +13,10 @@
         <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/drawable/splash.xml" value="0.1275" />
         <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/layout/activity_email_sign_in.xml" value="0.1935185185185185" />
         <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/layout/activity_login.xml" value="0.22" />
-        <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/layout/activity_main.xml" value="0.35520833333333335" />
+        <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/layout/activity_main.xml" value="0.1935185185185185" />
         <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/layout/activity_sing_up.xml" value="0.1935185185185185" />
+        <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/layout/choice_list.xml" value="0.1935185185185185" />
+        <entry key="..\:/Study/Android/Android/TPMyLocationKakao/app/src/main/res/menu/actionbar_main.xml" value="0.35520833333333335" />
       </map>
     </option>
   </component>
