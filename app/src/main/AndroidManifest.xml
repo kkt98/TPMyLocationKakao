@@ -3,6 +3,8 @@
     package="com.kkt1019.tpmylocationkakao">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".GlobalApplication"
@@ -14,17 +16,17 @@
         android:theme="@style/Theme.TPMyLocationKakao"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activites.PlaceUrlActivity"
+            android:exported="false" />
+        <activity
             android:name=".activites.EmailSignInActivity"
             android:exported="false" />
-
         <activity
             android:name=".activites.SingUpActivity"
             android:exported="false" />
-
         <activity
             android:name=".activites.LoginActivity"
             android:exported="false" />
-
         <activity
             android:name=".activites.SplashActivity"
             android:exported="true"
@@ -35,21 +37,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activites.MainActivity"
             android:exported="true" />
-
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
-                <data android:host="oauth"
+                <data
+                    android:host="oauth"
                     android:scheme="kakao3a38c1834f3d1471b647da7ec5cdc92d" />
             </intent-filter>
         </activity>

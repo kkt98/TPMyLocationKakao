@@ -1,17 +1,30 @@
 package com.kkt1019.tpmylocationkakao.activites
 
+import android.content.pm.PackageManager
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import android.view.Menu
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.*
 import com.google.android.material.tabs.TabLayout
 import com.kkt1019.tpmylocationkakao.R
 import com.kkt1019.tpmylocationkakao.databinding.ActivityMainBinding
 import com.kkt1019.tpmylocationkakao.fragments.PlaceListFragment
 import com.kkt1019.tpmylocationkakao.fragments.PlaceMapFragment
+import com.kkt1019.tpmylocationkakao.model.KakaoSearchPlaceResponse
+import com.kkt1019.tpmylocationkakao.network.RetrofitApiService
+import com.kkt1019.tpmylocationkakao.network.RetrofitHelper
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import java.util.jar.Manifest
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,8 +36,12 @@ class MainActivity : AppCompatActivity() {
     //2. 현재 내 위치 정보 객체(위도, 경도 정보를 멤버로 보유)
     var mylocation: Location? = null
 
-    //TODO...
+    //3. kakao 검색결과 응답 객페 : listFragment, mapFragment 모두 이 정보를 사용하기때문에
+    var searchPlaceResponse:KakaoSearchPlaceResponse? = null
+
+
     //[Google Fused Location API 사용 : play-services-location]
+    val providerClient: FusedLocationProviderClient by lazy { LocationServices.getFusedLocationProviderClient(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +86,67 @@ class MainActivity : AppCompatActivity() {
 
         //특정 키워드 단축 choice 버튼들의 리스너 처리 함수 호출
         setChoiceButtonsListener()
+        
+        //내 위치 정보제공은 동적퍼미션 필요
+        val permissions:Array<String> = arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        if (checkSelfPermission(permissions[0]) == PackageManager.PERMISSION_DENIED){
+            
+            //퍼미션 요청 다이얼로그 보이기
+            requestPermissions(permissions, 10)
+        }else{
+            //내위치 탐색 요청하는 기능 호출
+            requestMyLocation()
+        }
+    }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        
+        if (requestCode == 10 && grantResults[0] == PackageManager.PERMISSION_GRANTED) requestMyLocation()
+        else Toast.makeText(this, "내 위치정보를 제공하지않아 검색기능 사용불가😥", Toast.LENGTH_SHORT).show()
+    }
+    
+    private fun requestMyLocation(){
+        // 내위치 정보를 얻어오는 기능코드
+
+        //위치검색 기준 설정값 객체
+        val request: LocationRequest = LocationRequest.create()
+        request.interval = 1000
+        request.priority = Priority.PRIORITY_HIGH_ACCURACY //높은 정확도 우선
+
+        //실시간 위치정보갱신을 요청
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        providerClient.requestLocationUpdates(request, locationCallback, Looper.getMainLooper() )
+
+    }
+
+    //위치정보 검색결과 콜백객체
+    private val locationCallback: LocationCallback = object : LocationCallback(){
+        override fun onLocationResult(p0: LocationResult) {
+            super.onLocationResult(p0)
+
+            //갱신된 위치정보결과 객체에게 위치정보 얻어오기
+            mylocation = p0.lastLocation
+
+            //위치탐색이 끝났으니 내 위치 정보 업데이트 종료
+            providerClient.removeLocationUpdates(this) //this : locationCallback객체
+
+            //내취치 정보가 있으니 카카오 검색 시작
+            searchPlaces()
+        }
     }
 
     private fun setChoiceButtonsListener(){
@@ -127,10 +204,46 @@ class MainActivity : AppCompatActivity() {
 
     //카카오 키워드 장소검색 API작업을 수행하는 기능메소드
     private fun searchPlaces(){
-        Toast.makeText(this, "$searchQurey", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "$searchQurey : ${mylocation?.latitude} , ${mylocation?.longitude}", Toast.LENGTH_SHORT).show()
 
         //레트로핏을 이용하여 카카오 키워드 장소검색 API 파싱하기
+        val retrofit: Retrofit = RetrofitHelper.getRetrofitInstance("https://dapi.kakao.com")
+        retrofit.create(RetrofitApiService::class.java).searchPlaces(searchQurey, mylocation?.longitude.toString(), mylocation?.latitude.toString()).enqueue( object : Callback<KakaoSearchPlaceResponse>{
+            override fun onResponse(
+                call: Call<KakaoSearchPlaceResponse>,
+                response: Response<KakaoSearchPlaceResponse>
+            ) {
+                searchPlaceResponse = response.body()
 
+                //우선 객체가 잘 파싱되었는지 확인
+//                AlertDialog.Builder(this@MainActivity).setMessage(searchPlaceResponse?.documents!!.size.toString()).show()
+
+                //무조건 검색이 완료되면 placeListFragment 부터 보여주기
+                supportFragmentManager.beginTransaction().replace(R.id.container_fragment, PlaceListFragment()).commit()
+
+                //탭버튼의 위치를 "List" 탭으로 변경
+                binding.layoutTab.getTabAt(0)?.select()
+            }
+
+            override fun onFailure(call: Call<KakaoSearchPlaceResponse>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "서버에 오류가 있습니다. \n 잠시후에 다시 시도해주세요", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+        
+//        retrofit.create(RetrofitApiService::class.java)
+//            .searchPlacesToString(searchQurey, mylocation?.longitude.toString(), mylocation?.latitude.toString())
+//            .enqueue(object : Callback<String>{
+//                override fun onResponse(call: Call<String>, response: Response<String>) {
+//                    val s = response.body()
+//                    AlertDialog.Builder(this@MainActivity).setMessage(s.toString()).create().show()
+//                }
+//
+//                override fun onFailure(call: Call<String>, t: Throwable) {
+//                    Toast.makeText(this@MainActivity, "에러 : $t", Toast.LENGTH_SHORT).show()
+//                }
+//
+//            })
 
     }
 
