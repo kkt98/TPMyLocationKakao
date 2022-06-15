@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     //2. 현재 내 위치 정보 객체(위도, 경도 정보를 멤버로 보유)
     var mylocation: Location? = null
 
-    //3. kakao 검색결과 응답 객페 : listFragment, mapFragment 모두 이 정보를 사용하기때문에
+    //3. kakao 검색결과 응답 객체 : listFragment, mapFragment 모두 이 정보를 사용하기때문에
     var searchPlaceResponse:KakaoSearchPlaceResponse? = null
 
 

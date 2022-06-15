@@ -40,6 +40,7 @@
         <activity
             android:name=".activites.MainActivity"
             android:exported="true" />
+
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">
@@ -55,6 +56,10 @@
                     android:scheme="kakao3a38c1834f3d1471b647da7ec5cdc92d" />
             </intent-filter>
         </activity>
+
+<!--    카카오지도 네이티브앱키 등록    -->
+        <meta-data android:name="com.kakao.sdk.AppKey" android:value="3a38c1834f3d1471b647da7ec5cdc92d"/>
+
     </application>
 
 </manifest>
